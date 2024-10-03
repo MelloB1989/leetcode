@@ -4,41 +4,37 @@ import "fmt"
 
 func addBinary(a string, b string) string {
 	carry := 0
-	result := []byte("0000")
-	n := 4 - len(a)
-	for i := 0; i < n; i++ {
-		a += "0"
-	}
+	i := len(a) - 1
+	j := len(b) - 1
+	result := []byte{}
 
-	m := 4 - len(b)
-	for i := 0; i < m; i++ {
-		b += "0"
-	}
-	for i := 3; i >= 0; i-- {
+	for i >= 0 || j >= 0 || carry > 0 {
 		aa := 0
 		bb := 0
-		if string(a[i]) == "1" {
+
+		if i >= 0 && a[i] == '1' {
 			aa = 1
 		}
-		if string(b[i]) == "1" {
+		if j >= 0 && b[j] == '1' {
 			bb = 1
 		}
+
 		sum := aa + bb + carry
 		if sum == 2 {
 			carry = 1
-			result[i] = '0'
+			result = append([]byte{'0'}, result...)
 		} else if sum == 3 {
 			carry = 1
-			result[i] = '1'
+			result = append([]byte{'1'}, result...)
 		} else {
-			result[i] = byte(sum + '0')
+			carry = 0
+			result = append([]byte{byte(sum + '0')}, result...)
 		}
+
+		i--
+		j--
 	}
-	for i := 0; i < len(result)-2; i++ {
-		if result[i] == '0' {
-			result = result[1:]
-		}
-	}
+
 	return string(result)
 }
 
