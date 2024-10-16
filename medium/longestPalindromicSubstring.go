@@ -21,10 +21,9 @@ func longestPalindrome(s string) string {
 	maxLen := 1
 	maxStr := s[0:1]
 	for i := 0; i < length; i++ {
-		for j := i + maxLen; j < length; j++ {
-			fmt.Print(j, " ", i, " ", maxLen, " ", maxStr, " ", s[i:j], "\n")
+		for j := i + 1; j <= length; j++ {
 			if checkPalindrom(s[i:j]) && j-i > maxLen {
-				maxLen = j - 1
+				maxLen = j - i
 				maxStr = s[i:j]
 			}
 		}
@@ -33,6 +32,6 @@ func longestPalindrome(s string) string {
 }
 
 func main() {
-	s := "babad"
+	s := "civilwartestingwhetherthatnaptionoranynartionsoconceivedandsodedicatedcanlongendureWeareqmetonagreatbattlefiemldoftzhatwarWehavecometodedicpateaportionofthatfieldasafinalrestingplaceforthosewhoheregavetheirlivesthatthatnationmightliveItisaltogetherfangandproperthatweshoulddothisButinalargersensewecannotdedicatewecannotconsecratewecannothallowthisgroundThebravelmenlivinganddeadwhostruggledherehaveconsecrateditfaraboveourpoorponwertoaddordetractTgheworldadswfilllittlenotlenorlongrememberwhatwesayherebutitcanneverforgetwhattheydidhereItisforusthelivingrathertobededicatedheretotheulnfinishedworkwhichtheywhofoughtherehavethusfarsonoblyadvancedItisratherforustobeherededicatedtothegreattdafskremainingbeforeusthatfromthesehonoreddeadwetakeincreaseddevotiontothatcauseforwhichtheygavethelastpfullmeasureofdevotionthatweherehighlyresolvethatthesedeadshallnothavediedinvainthatthisnationunsderGodshallhaveanewbirthoffreedomandthatgovernmentofthepeoplebythepeopleforthepeopleshallnotperishfromtheearth"
 	fmt.Print(longestPalindrome(s))
 }
