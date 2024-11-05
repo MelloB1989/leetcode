@@ -5,56 +5,60 @@ import "fmt"
 func isMatch(s string, p string) bool {
 	pointer := 0
 	patterns := parsePattern(p)
+	fmt.Print(patterns)
 	checks := 0
-	// fmt.Print(patterns)
 	length := len(s)
 	r := true
+
 	for i := 0; i < len(patterns) && pointer < length; i++ {
 		for key, value := range patterns[i] {
 			switch key {
 			case "+":
-				// Check for "." value
-				if value == "." {
+				// Ensure at least one match for "+"
+				if pointer < length && (value == string(s[pointer]) || value == ".") {
+					// Move pointer forward while there are matches
 					pointer += 1
-					// fmt.Println(value, " ", key, " ", r)
-				} else if pointer < length && value == string(s[pointer]) { // Check if the current character matches
-					pointer += 1
-					// fmt.Println(value, " ", key, " ", r)
+					fmt.Println(value, " ", key, " ", r)
 				} else {
 					r = false // Fail if there's no match for "+"
-					// fmt.Println(value, " ", key, " ", r)
+					fmt.Println(value, " ", key, " ", r)
+				}
+				// Check for a*a condition
+				if i-1 > 0 {
+					for k, v := range patterns[i-1] {
+						if k == "*" && v == value {
+							r = true
+							// pointer += 1
+						}
+					}
 				}
 			case ".":
 				pointer += 1 // Match any single character
 			case "*":
-				// Check for "." value
-				if value == "." {
-					r = true
-					if len(patterns) > 1 {
-						pointer = len(patterns) - 1
-					} else {
-						pointer = length
-					}
-				}
 				// If the current character does not match the character before '*'
-				if pointer < length && value != string(s[pointer]) {
-					// Here, we can safely skip the '*'
-					// We can just continue to the next pattern because '*' means zero occurrences
+				if pointer < length && (value != string(s[pointer]) && value != ".") {
+					// `*` can match zero occurrences
 					r = true // Keep r true because `*` can represent zero occurrences
-					// fmt.Println(value, " ", key, " ", r)
+					fmt.Println(value, " ", key, " ", r)
 				} else {
 					// If it matches, we match one or more occurrences
-					for pointer < length && (value == string(s[pointer])) {
+					for pointer < length && (value == string(s[pointer]) || value == ".") {
+						if pointer == length-1 && len(patterns)-(i+1) > 0 {
+							fmt.Println("breaking: ", len(patterns)-(i+1))
+							break
+						}
 						pointer += 1
-						// fmt.Println(value, " ", key, " ", r)
+						fmt.Println(value, " ", key, " ", r)
 					}
 				}
 			}
 			checks += 1
 		}
 	}
+
 	// After processing all patterns, check if we have consumed all characters in s
-	return r && pointer == length && checks == len(patterns)
+	fmt.Println("pointer: ", pointer, " checks: ", checks, " out of: ", len(patterns))
+	return r && pointer == length && checks == len(patterns) // Ensure that all characters in s are matched
 }
 
 func parsePattern(s string) []map[string]string {
