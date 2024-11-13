@@ -19,7 +19,7 @@ func threeSumClosest(nums []int, target int) int {
 		left, right := i+1, length-1
 		for left < right {
 			sum := nums[i] + nums[left] + nums[right]
-			fmt.Println("sum: ", sum, " i: ", nums[i], " l: ", nums[left], " r: ", nums[right], " closest: ", closest, " target: ", target)
+			// fmt.Println("sum: ", sum, " i: ", nums[i], " l: ", nums[left], " r: ", nums[right], " closest: ", closest, " target: ", target)
 			if absInt(sum-target) < absInt(closest-target) {
 				closest = sum
 

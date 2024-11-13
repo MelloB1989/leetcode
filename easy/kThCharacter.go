@@ -6,7 +6,6 @@ func kthCharacter(k int) byte {
 	init := "a"
 	for len(init) < k {
 		init += genDo(init)
-		// fmt.Println(init)
 	}
 	return init[k-1]
 }
