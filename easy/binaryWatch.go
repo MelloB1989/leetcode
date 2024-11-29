@@ -3,18 +3,42 @@ package main
 import "fmt"
 
 func readBinaryWatch(turnedOn int) []string {
-	h := []int{8, 4, 2, 1}
-	m := []int{32, 16, 8, 4, 2, 1}
+	result := []string{}
+	faces := []int{1, 2, 4, 8, 1, 2, 4, 8, 16, 32}
+	time := ""
 
-	hl := 12
-	ml := 60
+	var findTimes func(time string, limit int, i int, hours int, mins int)
+	findTimes = func(time string, limit int, i int, hours int, mins int) {
+		if limit == 0 {
+			if hours > 11 || mins > 59 {
+				return
+			}
+			if mins < 10 {
+				time = fmt.Sprintf("%d:0%d", hours, mins)
+			} else {
+				time = fmt.Sprintf("%d:%d", hours, mins)
+			}
+			result = append(result, time)
+		}
 
-	result := []int{}
-
-	for i := 0; i < len(h); i++ {
-
+		for j := i; j < len(faces); j++ {
+			if j < 4 {
+				hours += faces[j]
+			} else {
+				mins += faces[j]
+			}
+			findTimes(time, limit-1, (j + 1), hours, mins)
+			if j < 4 {
+				hours -= faces[j]
+			} else {
+				mins -= faces[j]
+			}
+		}
 	}
 
+	findTimes(time, turnedOn, 0, 0, 0)
+
+	return result
 }
 
 func main() {
