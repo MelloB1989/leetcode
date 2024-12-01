@@ -6,32 +6,41 @@ import (
 )
 
 func isAdditiveNumber(num string) bool {
-	result := true
-	var b func(p1s int, p1e int, p2s int, p2e int) bool
-	b = func(p1s int, p1e int, p2s int, p2e int) bool {
-		if p1e < len(num) && p2e < len(num) {
-			p, _ := strconv.Atoi(num[p1s:p1e])
-			q, _ := strconv.Atoi(num[p2s:p2e])
-			next := strconv.Itoa((p + q))
-			if p2e+len(next) >= len(num) {
-				result = false
-				return result
+	n := len(num)
+	var check func(p1, p2, start int) bool
+	check = func(p1, p2, start int) bool {
+		if start == n {
+			return true
+		}
+
+		sum := strconv.Itoa(p1 + p2)
+		fmt.Println(p1, p2, sum)
+
+		if start+len(sum) > n || num[start:start+len(sum)] != sum {
+			return false
+		}
+
+		return check(p2, p1+p2, start+len(sum))
+	}
+	for i := 1; i < n; i++ {
+		if num[0] == '0' && i > 1 {
+			break
+		}
+		p, _ := strconv.Atoi(num[:i])
+		for j := i + 1; j < n; j++ {
+			if num[i] == '0' && j > i+1 {
+				break
 			}
-			fmt.Println(num[p1s:p1e], num[p2s:p2e], num[p2e:p2e+len(next)], next)
-			if next != num[p2e:p2e+len(next)] {
-				result = b(p1s, p1e, p2s, p2e+1) || b(p1s, p1e+1, p2s+1, p2e+1)
-				return result
-			} else {
-				result = true
-				b(p1s+1, p1e+1, p2s+1, p2e+1)
-				return result
+			q, _ := strconv.Atoi(num[i:j])
+			// fmt.Println(p, q, j)
+			if check(p, q, j) {
+				return true
 			}
 		}
-		return result
 	}
-	return b(0, 1, 1, 2)
+	return false
 }
 
 func main() {
-	fmt.Println(isAdditiveNumber("199100199"))
+	fmt.Println(isAdditiveNumber("123"))
 }
