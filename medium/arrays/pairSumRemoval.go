@@ -3,8 +3,8 @@ package main
 import "fmt"
 
 func main() {
-	arr := []int{4, 4, 1, 3, 1, 3, 2, 2, 5, 5, 1, 5, 2, 1, 2, 3, 5, 4}
-	k := 2
+	arr := []int{1, 2, 3, 4}
+	k := 5
 
 	fmt.Println(maxOperations(arr, k))
 }
