@@ -2,28 +2,34 @@ package main
 
 import "fmt"
 
+/*
+[24,12,8,6]
+ 1  0  0 0
+ 2  2  1 1
+ 3  3  3 2
+*/
+
 func productExceptSelf(nums []int) []int {
-	pr := 1
+	result := make([]int, len(nums))
 
-	for i := 0; i < len(nums); i++ {
-		if nums[i] == 0 {
-			pr *= 1
-		} else {
-			pr *= nums[i]
-		}
+	for j := 0; j < len(nums); j++ {
+		result[j] = 1
 	}
 
-	fmt.Println(pr)
+	left := 1
+	right := 1
 
 	for i := 0; i < len(nums); i++ {
-		if nums[i] == 0 {
-			nums[i] = pr
-		} else {
-			nums[i] = pr / nums[i]
-		}
+		result[i] *= left
+		left *= nums[i]
 	}
 
-	return nums
+	for j := len(nums) - 1; j >= 0; j-- {
+		result[j] *= right
+		right *= nums[j]
+	}
+
+	return result
 }
 
 func main() {
