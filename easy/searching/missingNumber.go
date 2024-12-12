@@ -4,6 +4,21 @@ import (
 	"fmt"
 )
 
+// func missingNumber(nums []int) int {
+// 	sort.Ints(nums)
+// 	left := 0
+// 	right := len(nums) - 1
+// 	for left < right {
+// 		mid := (left + right) / 2
+// 		if nums[mid] > mid {
+// 			right = mid
+// 		} else {
+// 			left = mid + 1
+// 		}
+// 	}
+// 	return left
+// }
+//
 func missingNumber(nums []int) int {
 	r := len(nums)
 	for i := 0; i < len(nums); i++ {
