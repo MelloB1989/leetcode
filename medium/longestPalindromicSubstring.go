@@ -2,33 +2,28 @@ package main
 
 import "fmt"
 
-func reverseString(s string) string {
-	if len(s) == 0 {
-		return s
-	}
-	return reverseString(s[1:]) + string(s[0])
-}
-
-func checkPalindrom(s string) bool {
-	return reverseString(s) == s
-}
-
 func longestPalindrome(s string) string {
 	length := len(s)
 	if length <= 1 {
 		return s
 	}
-	maxLen := 1
-	maxStr := s[0:1]
-	for i := 0; i < length; i++ {
-		for j := i + 1; j <= length; j++ {
-			if checkPalindrom(s[i:j]) && j-i > maxLen {
-				maxLen = j - i
-				maxStr = s[i:j]
+	maxLen := 0
+	result := ""
+	longest := func(l, r int) {
+		for l >= 0 && r < length && s[l] == s[r] {
+			if r-l+1 > maxLen {
+				maxLen = r - l + 1
+				result = s[l : r+1]
 			}
+			l--
+			r++
 		}
 	}
-	return maxStr
+	for i := 0; i < length; i++ {
+		longest(i, i)
+		longest(i, i+1)
+	}
+	return result
 }
 
 func main() {

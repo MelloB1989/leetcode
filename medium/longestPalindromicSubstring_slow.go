@@ -2,35 +2,38 @@ package main
 
 import "fmt"
 
-func reverseString(s string) string {
-	if len(s) == 0 {
-		return s
-	}
-	return reverseString(s[1:]) + string(s[0])
-}
-
 func checkPalindrom(s string) bool {
-	return reverseString(s) == s
+	left := 0
+	right := len(s) - 1
+	for left <= right {
+		if s[left] != s[right] {
+			return false
+		}
+		left++
+		right--
+	}
+	return true
 }
 
 func longestPalindrome(s string) string {
 	length := len(s)
-	longest := string(s[0])
-	if length == 0 {
-		return ""
+	if length <= 1 {
+		return s
 	}
+	maxLen := 1
+	maxStr := s[0:1]
 	for i := 0; i < length; i++ {
-		for j := i + 1; j < length; j++ {
-			sub := s[i : j+1]
-			if checkPalindrom(sub) && len(sub) > len(longest) {
-				longest = sub
+		for j := i + 1; j <= length; j++ {
+			if checkPalindrom(s[i:j]) && j-i > maxLen {
+				maxLen = j - i
+				maxStr = s[i:j]
 			}
 		}
 	}
-	return longest
+	return maxStr
 }
 
 func main() {
-	s := "bb"
+	s := "civilwartestingwhetherthatnaptionoranynartionsoconceivedandsodedicatedcanlongendureWeareqmetonagreatbattlefiemldoftzhatwarWehavecometodedicpateaportionofthatfieldasafinalrestingplaceforthosewhoheregavetheirlivesthatthatnationmightliveItisaltogetherfangandproperthatweshoulddothisButinalargersensewecannotdedicatewecannotconsecratewecannothallowthisgroundThebravelmenlivinganddeadwhostruggledherehaveconsecrateditfaraboveourpoorponwertoaddordetractTgheworldadswfilllittlenotlenorlongrememberwhatwesayherebutitcanneverforgetwhattheydidhereItisforusthelivingrathertobededicatedheretotheulnfinishedworkwhichtheywhofoughtherehavethusfarsonoblyadvancedItisratherforustobeherededicatedtothegreattdafskremainingbeforeusthatfromthesehonoreddeadwetakeincreaseddevotiontothatcauseforwhichtheygavethelastpfullmeasureofdevotionthatweherehighlyresolvethatthesedeadshallnothavediedinvainthatthisnationunsderGodshallhaveanewbirthoffreedomandthatgovernmentofthepeoplebythepeopleforthepeopleshallnotperishfromtheearth"
 	fmt.Print(longestPalindrome(s))
 }
