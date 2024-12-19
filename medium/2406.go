@@ -1,35 +1,30 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+)
 
 func minGroups(intervals [][]int) int {
-	startMap := make(map[int]int)
-	endMap := make(map[int]int)
-	count := 0
-
-	for i, interval := range intervals {
-		startMap[i] = interval[0]
-		endMap[i] = interval[1]
+	n := len(intervals)
+	unprocessed := make([]int, n)
+	for i := 0; i < n; i++ {
+		unprocessed[i] = i
 	}
 
-	for len(startMap) > 0 {
-		var firstKey int
-		for k := range startMap {
-			firstKey = k
-			break
-		}
-		fmt.Println(len(startMap), intervals[firstKey])
+	count := 0
 
-		s := startMap[firstKey]
-		e := endMap[firstKey]
-		delete(startMap, firstKey)
-		delete(endMap, firstKey)
+	for len(unprocessed) > 0 {
+		firstKey := unprocessed[0]
+		s := intervals[firstKey][0]
+		e := intervals[firstKey][1]
+		unprocessed = unprocessed[1:]
 
 		toDelete := []int{}
-		for k, st := range startMap {
-			end := endMap[k]
+		for i, k := range unprocessed {
+			st := intervals[k][0]
+			end := intervals[k][1]
 			if end < s || st > e {
-				toDelete = append(toDelete, k)
+				toDelete = append(toDelete, i)
 				if st < s {
 					s = st
 				}
@@ -39,9 +34,9 @@ func minGroups(intervals [][]int) int {
 			}
 		}
 
-		for _, k := range toDelete {
-			delete(startMap, k)
-			delete(endMap, k)
+		for i := len(toDelete) - 1; i >= 0; i-- {
+			idx := toDelete[i]
+			unprocessed = append(unprocessed[:idx], unprocessed[idx+1:]...)
 		}
 
 		count++
@@ -52,8 +47,11 @@ func minGroups(intervals [][]int) int {
 
 func main() {
 	fmt.Println(minGroups([][]int{
-		{1, 3}, {5, 6}, {8, 10}, {11, 13},
+		{441459, 446342}, {801308, 840640}, {871890, 963447}, {228525, 336985}, {807945, 946787}, {479815, 507766}, {693292, 944029}, {751962, 821744},
 	}))
+	// fmt.Println(minGroups([][]int{
+	// 	{1, 3}, {5, 6}, {8, 10}, {11, 13},
+	// }))
 	// fmt.Println(minGroups([][]int{
 	// 	{5, 10}, {6, 8}, {1, 5}, {2, 3}, {1, 10},
 	// }))
