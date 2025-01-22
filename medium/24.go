@@ -6,16 +6,24 @@ type ListNode struct {
 }
 
 func swapPairs(head *ListNode) *ListNode {
-	current := head
-	for current != nil {
-		cur := current
-		next := cur.Next
-		temp := next
-		next.Next = cur
-		cur.Next = temp.Next
-		current = current.Next
+	if head == nil || head.Next == nil {
+		return head
 	}
-	return head
+
+	new := &ListNode{Next: head}
+	n := new
+	for head != nil && head.Next != nil {
+		first := head
+		second := first.Next
+
+		n.Next = second
+		first.Next = second.Next
+		second.Next = first
+
+		n = first
+		head = first.Next
+	}
+	return new.Next
 }
 
 func main() {
