@@ -2,21 +2,21 @@ package main
 
 import "fmt"
 
-type ListNode struct {
+type LN struct {
 	Val  int
-	Next *ListNode
+	Next *LN
 }
 
 type MyLinkedList struct {
-	List   ListNode
-	Head   *ListNode
-	Tail   *ListNode
+	List   LN
+	Head   *LN
+	Tail   *LN
 	Length int
 }
 
 func Constructor() MyLinkedList {
 	return MyLinkedList{
-		List:   ListNode{},
+		List:   LN{},
 		Head:   nil,
 		Tail:   nil,
 		Length: 0,
@@ -37,7 +37,7 @@ func (this *MyLinkedList) Get(index int) int {
 }
 
 func (this *MyLinkedList) AddAtHead(val int) {
-	newNode := &ListNode{
+	newNode := &LN{
 		Val:  val,
 		Next: this.Head,
 	}
@@ -49,7 +49,7 @@ func (this *MyLinkedList) AddAtHead(val int) {
 }
 
 func (this *MyLinkedList) AddAtTail(val int) {
-	newNode := &ListNode{
+	newNode := &LN{
 		Val:  val,
 		Next: nil,
 	}
@@ -80,7 +80,7 @@ func (this *MyLinkedList) AddAtIndex(index int, val int) {
 	for i := 0; i < index-1; i++ {
 		curr = curr.Next
 	}
-	newNode := &ListNode{
+	newNode := &LN{
 		Val:  val,
 		Next: curr.Next,
 	}
@@ -89,11 +89,15 @@ func (this *MyLinkedList) AddAtIndex(index int, val int) {
 }
 
 func (this *MyLinkedList) DeleteAtIndex(index int) {
-	if index < 0 || index > this.Length {
+	if index < 0 || index >= this.Length || this.Length == 0 {
 		return
 	}
+	this.Length--
 	if index == 0 {
 		this.Head = this.Head.Next
+		if this.Length == 0 {
+			this.Tail = nil
+		}
 		return
 	}
 
@@ -101,8 +105,12 @@ func (this *MyLinkedList) DeleteAtIndex(index int) {
 	for i := 0; i < index-1; i++ {
 		curr = curr.Next
 	}
-	curr.Next = curr.Next.Next
-	this.Length -= 1
+	if index == this.Length {
+		curr.Next = nil
+		this.Tail = curr
+	} else {
+		curr.Next = curr.Next.Next
+	}
 }
 
 func (this *MyLinkedList) PrintList() {
@@ -116,11 +124,12 @@ func (this *MyLinkedList) PrintList() {
 
 func main() {
 	list := Constructor()
-	list.AddAtHead(1)
-	list.AddAtTail(3)
-	fmt.Println(list.Get(0))
-	list.AddAtIndex(1, 2)
-	list.PrintList()
-	list.DeleteAtIndex(1)
-	list.PrintList()
+	list.DeleteAtIndex(0)
+	// list.AddAtHead(1)
+	// list.AddAtTail(3)
+	// fmt.Println(list.Get(0))
+	// list.AddAtIndex(1, 2)
+	// list.PrintList()
+	// list.DeleteAtIndex(1)
+	// list.PrintList()
 }
