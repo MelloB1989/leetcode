@@ -1,36 +1,38 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"sort"
+)
 
-func isAnagram(w1, w2 string) bool {
-	m := map[rune]int{}
-	for _, v := range w1 {
-		m[v] += 1
+func sortString(s string) string {
+	r := []rune(s)
+	sort.Slice(r, func(i int, j int) bool {
+		return r[i] > r[j]
+	})
+	return string(r)
+}
+
+func groupAnagrams(words []string) [][]string {
+	m := map[string][]string{}
+	for _, word := range words {
+		sortedWord := sortString(word)
+		m[sortedWord] = append(m[sortedWord], word)
 	}
-	for _, v := range w2 {
-		m[v] -= 1
-	}
+
+	result := [][]string{}
 	for _, v := range m {
-		if v != 0 {
-			return false
-		}
+		result = append(result, v)
 	}
-	return true
+	return result
 }
 
 func main() {
-	words := []string{"eat", "tea", "tan", "ate", "nat", "bat"}
-	anagram := [][]string{}
-	for i := 0; i < len(words); i++ {
-		currentList := []string{}
-		currentList = append(currentList, words[i])
-		for j := i + 1; j < len(words); j++ {
-			if isAnagram(words[i], words[j]) {
-				currentList = append(currentList, words[j])
-			}
-		}
-		anagram = append(anagram, currentList)
-	}
-
-	fmt.Println(anagram)
+	// words := []string{"eat", "tea", "tan", "ate", "nat", "bat"}
+	words := []string{"", ""}
+	anagrams := groupAnagrams(words)
+	fmt.Println(anagrams)
 }
+
+// Input: strs = ["eat","tea","tan","ate","nat","bat"]
+// Output: [["bat"],["nat","tan"],["ate","eat","tea"]]
