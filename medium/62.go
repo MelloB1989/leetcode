@@ -33,9 +33,11 @@ func uniquePaths(m int, n int) int {
 	for j := 0; j < n; j++ {
 		dp[0][j] = 1
 	}
+	fmt.Println(dp)
 	for i := 1; i < m; i++ {
 		for j := 1; j < n; j++ {
 			dp[i][j] = dp[i-1][j] + dp[i][j-1]
+			fmt.Println(dp)
 		}
 	}
 
@@ -43,5 +45,5 @@ func uniquePaths(m int, n int) int {
 }
 
 func main() {
-	fmt.Println(uniquePaths(4, 5))
+	fmt.Println(uniquePaths(3, 2))
 }
