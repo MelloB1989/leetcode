@@ -49,22 +49,14 @@ public class Main {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         int T = sc.nextInt();
-        StringBuilder result = new StringBuilder();
-
+        StringBuilder sb = new StringBuilder();
         while (T-- > 0) {
             int N = sc.nextInt();
             int M = sc.nextInt();
-
-            int R = N / 2;
-            int B = N - R;
-
-            if (M <= R && M <= B) {
-                result.append("Yes\n");
-            } else {
-                result.append("No\n");
-            }
+            if (M == 0) sb.append("Yes\n");
+            else if (N % 2 == 0 && (N / 2) >= M) sb.append("Yes\n");
+            else sb.append("No\n");
         }
-
-        System.out.print(result);
+        System.out.print(sb);
     }
 }
