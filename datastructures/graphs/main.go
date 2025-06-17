@@ -90,10 +90,6 @@ func (g *Graph) OutDegree(vertex string) int {
 	return len(g.adjacencyList[vertex])
 }
 
-func (g *Graph) IsCyclic() bool {
-	return false
-}
-
 func (g *Graph) BFS(start string) []string {
 	queue := queue.NewQueue()
 	res := []string{}
@@ -127,6 +123,60 @@ func (g *Graph) DFS(start string) []string {
 	}
 	dfsr(start)
 	return res
+}
+
+// Undirected
+//
+//	func (g *Graph) IsCyclic() bool {
+//		visited := map[string]bool{}
+//		var dfs func(parent, s string) bool
+//		dfs = func(parent string, s string) bool {
+//			visited[s] = true
+//			for _, u := range g.adjacencyList[s] {
+//				if !visited[u] {
+//					if dfs(s, u) {
+//						return true
+//					}
+//				} else if parent != u {
+//					return true
+//				}
+//			}
+//			return false
+//		}
+//		for k, _ := range g.adjacencyList {
+//			if !visited[k] {
+//				if dfs("", k) {
+//					return true
+//				}
+//			}
+//		}
+//		return false
+//	}
+//
+// Directed
+func (g *Graph) IsCyclic() bool {
+	visited := map[string]bool{}
+	recStack := map[string]bool{}
+	var dfs func(s string) bool
+	dfs = func(s string) bool {
+		visited[s] = true
+		recStack[s] = true
+		for _, u := range g.adjacencyList[s] {
+			if !visited[u] && dfs(u) {
+				return true
+			} else if recStack[u] {
+				return true
+			}
+		}
+		recStack[s] = false
+		return false
+	}
+	for v, _ := range g.adjacencyList {
+		if !visited[v] && dfs(v) {
+			return true
+		}
+	}
+	return false
 }
 
 func (g *Graph) ShortestPath(from, to string) []string {

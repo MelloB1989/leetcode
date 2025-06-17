@@ -3,40 +3,19 @@ package main
 import "fmt"
 
 func findTheCity(n int, edges [][]int, distanceThreshold int) int {
-	neighbourMap := map[int][]int{}
-	var buildNeighbours func(currentEdge []int)
-	buildNeighbours = func(currentEdge []int) {
-		distTravelled := 0
-		if currentEdge[2] <= distanceThreshold {
-			neighbourMap[currentEdge[0]] = append(neighbourMap[currentEdge[0]], currentEdge[1])
-			neighbourMap[currentEdge[1]] = append(neighbourMap[currentEdge[1]], currentEdge[0])
-			distTravelled += currentEdge[2]
-		}
-		if distTravelled < currentEdge[2] {
+	const INT_MAX = 1<<31 - 1
+	visited := make([]int, n)
+	dist := make([]int, n)
+	queue := make([]int, n)
+	for i, _ := range dist {
+		dist[i] = INT_MAX
+	}
+	graph := [][]int{}
 
-		}
-	}
-	for _, edge := range edges {
-		buildNeighbours(edge)
-		// if edge[2] <= distanceThreshold {
-		// 	neighbourMap[edge[0]] = append(neighbourMap[edge[0]], edge[1])
-		// 	neighbourMap[edge[1]] = append(neighbourMap[edge[1]], edge[0])
-		// }
-	}
-	min := n
-	res := 0
-	for k, v := range neighbourMap {
-		if len(v) < min {
-			res = k
-			min = len(v)
-		}
-		fmt.Println(res, k, v)
-		if len(v) == min && k > res {
-			res = k
-		}
-	}
-	return res
+	var bfs func()
+	bfs = func() {
 
+	}
 }
 
 func main() {
