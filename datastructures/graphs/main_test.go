@@ -1,13 +1,12 @@
-package main
+package graph
 
 import (
+	"reflect"
 	"testing"
-
-	graph "graph/graph_implementation"
 )
 
 func TestAddVertex(t *testing.T) {
-	g := graph.NewGraph()
+	g := NewGraph()
 	g.AddVertex("A")
 
 	if !g.HasVertex("A") {
@@ -16,7 +15,7 @@ func TestAddVertex(t *testing.T) {
 }
 
 func TestAddEdge(t *testing.T) {
-	g := graph.NewGraph()
+	g := NewGraph()
 	g.AddVertex("A")
 	g.AddVertex("B")
 	g.AddEdge("A", "B")
@@ -27,7 +26,7 @@ func TestAddEdge(t *testing.T) {
 }
 
 func TestRemoveVertex(t *testing.T) {
-	g := graph.NewGraph()
+	g := NewGraph()
 	g.AddVertex("A")
 	g.RemoveVertex("A")
 
@@ -37,7 +36,7 @@ func TestRemoveVertex(t *testing.T) {
 }
 
 func TestRemoveEdge(t *testing.T) {
-	g := graph.NewGraph()
+	g := NewGraph()
 	g.AddVertex("A")
 	g.AddVertex("B")
 	g.AddEdge("A", "B")
@@ -49,7 +48,7 @@ func TestRemoveEdge(t *testing.T) {
 }
 
 func TestHasVertex(t *testing.T) {
-	g := graph.NewGraph()
+	g := NewGraph()
 	g.AddVertex("X")
 
 	if !g.HasVertex("X") {
@@ -62,7 +61,7 @@ func TestHasVertex(t *testing.T) {
 }
 
 func TestHasEdge(t *testing.T) {
-	g := graph.NewGraph()
+	g := NewGraph()
 	g.AddVertex("A")
 	g.AddVertex("B")
 	g.AddEdge("A", "B")
@@ -77,7 +76,7 @@ func TestHasEdge(t *testing.T) {
 }
 
 func TestGetAdjacencyList(t *testing.T) {
-	g := graph.NewGraph()
+	g := NewGraph()
 	g.AddVertex("A")
 	g.AddVertex("B")
 	g.AddVertex("C")
@@ -95,7 +94,7 @@ func TestGetAdjacencyList(t *testing.T) {
 }
 
 func TestVertices(t *testing.T) {
-	g := graph.NewGraph()
+	g := NewGraph()
 	g.AddVertex("A")
 	g.AddVertex("B")
 
@@ -113,7 +112,7 @@ func TestVertices(t *testing.T) {
 }
 
 func TestEdges(t *testing.T) {
-	g := graph.NewGraph()
+	g := NewGraph()
 	g.AddVertex("A")
 	g.AddVertex("B")
 	g.AddEdge("A", "B")
@@ -137,7 +136,7 @@ func TestEdges(t *testing.T) {
 }
 
 func TestInOutDegree(t *testing.T) {
-	g := graph.NewGraph()
+	g := NewGraph()
 	g.AddVertex("A")
 	g.AddVertex("B")
 	g.AddVertex("C")
@@ -156,7 +155,7 @@ func TestInOutDegree(t *testing.T) {
 }
 
 func TestIsCyclic(t *testing.T) {
-	g := graph.NewGraph()
+	g := NewGraph()
 	g.AddVertex("A")
 	g.AddVertex("B")
 	g.AddVertex("C")
@@ -169,7 +168,7 @@ func TestIsCyclic(t *testing.T) {
 		t.Errorf("Expected cycle to be detected")
 	}
 
-	g2 := graph.NewGraph()
+	g2 := NewGraph()
 	g2.AddVertex("X")
 	g2.AddVertex("Y")
 	g2.AddVertex("Z")
@@ -179,5 +178,94 @@ func TestIsCyclic(t *testing.T) {
 
 	if g2.IsCyclic() {
 		t.Errorf("Did not expect a cycle")
+	}
+}
+
+func setupGraph() *Graph {
+	g := NewGraph()
+	for _, v := range []string{"A", "B", "C", "D", "E"} {
+		g.AddVertex(v)
+	}
+	g.AddEdge("A", "B")
+	g.AddEdge("A", "C")
+	g.AddEdge("C", "D")
+	g.AddEdge("A", "D")
+	g.AddEdge("B", "D")
+	g.AddEdge("C", "E")
+	return g
+}
+
+func TestBFS(t *testing.T) {
+	g := setupGraph()
+	result := g.BFS("A")
+	expected := []string{"A", "B", "C", "D", "E"}
+
+	if !reflect.DeepEqual(result, expected) {
+		t.Errorf("BFS failed. Expected %v, got %v", expected, result)
+	}
+}
+
+func TestDFS(t *testing.T) {
+	g := setupGraph()
+	result := g.DFS("A")
+	// Depending on implementation order, one valid result is:
+	expected := []string{"A", "B", "D", "C", "E"}
+
+	if !reflect.DeepEqual(result, expected) {
+		t.Errorf("DFS failed. Expected %v, got %v", expected, result)
+	}
+}
+
+func TestShortestPath(t *testing.T) {
+	g := setupGraph()
+
+	tests := []struct {
+		from, to string
+		expected []string
+	}{
+		{"A", "D", []string{"A", "D"}},
+		{"A", "E", []string{"A", "C", "E"}},
+		{"A", "A", []string{"A"}},
+		{"B", "E", nil}, // no path
+	}
+
+	for _, tc := range tests {
+		result := g.ShortestPath(tc.from, tc.to)
+		if !reflect.DeepEqual(result, tc.expected) {
+			t.Errorf("ShortestPath(%s -> %s) = %v, want %v", tc.from, tc.to, result, tc.expected)
+		}
+	}
+}
+
+func TestShortestPathFromAVertex(t *testing.T) {
+	g := NewGraph()
+	for _, v := range []string{"A", "B", "C", "D", "E", "F"} {
+		g.AddVertex(v)
+	}
+	// Build the graph:
+	// A → B → D
+	// A → C → E
+	// F is disconnected
+
+	g.AddEdge("A", "B")
+	g.AddEdge("B", "D")
+	g.AddEdge("A", "C")
+	g.AddEdge("C", "E")
+
+	expected := map[string]int{
+		"A": 0,
+		"B": 1,
+		"C": 1,
+		"D": 2,
+		"E": 2,
+		"F": -1, // unreachable
+	}
+
+	result := g.ShortestPathFromAVertex("A")
+
+	for node, dist := range expected {
+		if result[node] != dist {
+			t.Errorf("ShortestPathFromAVertex[A → %s] = %d; want %d", node, result[node], dist)
+		}
 	}
 }
