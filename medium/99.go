@@ -7,23 +7,25 @@ type TreeNode struct {
 }
 
 func recoverTree(root *TreeNode) {
-	var dfs func(node *TreeNode, min, max *int)
-	dfs = func(node *TreeNode, min, max *int) {
+	var inorder func(node *TreeNode)
+	var first, second, prev *TreeNode
+	inorder = func(node *TreeNode) {
 		if node == nil {
 			return
 		}
-		if max != nil && node.Val > *max {
-			temp := *min
-			*min = node.Val
-			node.Val = temp
+		inorder(node.Left)
+		if prev != nil && node.Val < prev.Val {
+			if first == nil {
+				first = prev
+			}
+			second = node
 		}
-		if min != nil && node.Val < *min {
-			temp := *max
-			*max = node.Val
-			node.Val = temp
-		}
-		dfs(node.Left, min, &node.Val)
-		dfs(node.Right, &node.Val, max)
+		prev = node
+		inorder(node.Right)
+	}
+	inorder(root)
+	if first != nil && second != nil {
+		first.Val, second.Val = second.Val, first.Val
 	}
 }
 
