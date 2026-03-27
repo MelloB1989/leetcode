@@ -5,23 +5,45 @@ import (
 )
 
 func findUnsortedSubarray(nums []int) int {
-	stack := []int{}
-
-	for i, _ := range nums {
-		if i < len(nums)-1 && nums[i] > nums[i+1] {
-			stack = append(stack, i)
+	start, end := -1, -1
+	n := len(nums)
+	for i := 0; i < n-1; i++ {
+		if nums[i] > nums[i+1] {
+			start = i
+			break
 		}
 	}
-	if len(stack) < 2 {
-		if len(stack) == 0 {
-			return 0
-		} else {
-			return len(nums)
+
+	if start == -1 {
+		return 0
+	}
+
+	for i := n - 1; i > 0; i-- {
+		if nums[i] < nums[i-1] {
+			end = i
+			break
 		}
 	}
-	i, j := stack[0], stack[len(stack)-1]
 
-	return j - i + 2
+	minVal, maxVal := nums[start], nums[start]
+	for i := start; i <= end; i++ {
+		if nums[i] < minVal {
+			minVal = nums[i]
+		}
+		if nums[i] > maxVal {
+			maxVal = nums[i]
+		}
+	}
+
+	for start > 0 && nums[start-1] > minVal {
+		start--
+	}
+
+	for end < n-1 && nums[end+1] < maxVal {
+		end++
+	}
+
+	return end - start + 1
 }
 
 func main() {
